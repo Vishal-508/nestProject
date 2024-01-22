@@ -31,9 +31,9 @@ export class MessageController{
 
 
 // get all messages by user id
-@Get('user/:userId')
+@Get('user')
 async getAllMessagesByUserId(
-  @Param('userId') userId: number,
+  @Query('userId') userId: number,
   @Query('page') page: number,
   @Query('pageSize') pageSize: number,
 ): Promise<{ messages: Message[], totalCount: number }> {
@@ -50,7 +50,7 @@ async getAllMessagesByUserId(
   }
 }
 
-// 
+// get all messages
 @Get()
 async getAllContacts(): Promise<Message[]> {
   return await this.messageService.getAllMessage();

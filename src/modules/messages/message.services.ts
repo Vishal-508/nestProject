@@ -41,36 +41,50 @@ async getContactById(id: number): Promise<Contacts | null> {
 
 
 
-async getAllMessagesByUserId(userId: number, page: number = 1, pagesize: number = 5): Promise<{ messages: Message[], totalCount: number }> {
-  // Check if the user exists
-  const user = await this.getContactById(userId);
+async getAllMessagesByUserId(userId: number, page: number = 1, pagesize: number = 5): Promise<any> {
 
-  if (!user) {
-    throw new NotFoundException(`Contact with ID ${userId} not found`);
+// { messages: Message[], totalCount: number }
+  let where : any ={
+
   }
+  // // Check if the user exists
+  // const user = await this.getContactById(userId);
+  
+  // if (!user) {
+  //   throw new NotFoundException(`Contact with ID ${userId} not found`);
+  // }
+  if(userId){
+    where.userId=userId;
+  }
+
+
 
   // Calculate pagination parameters
   const offset = (page - 1) * pagesize;
   const limit = pagesize;
 
   // Retrieve messages for the user with pagination
-  const messages = await Message.findAll({
-    where: { userId },
+  const messages = await Message.findAndCountAll({
+    where ,
     offset,
     limit,
-    include: [{ model: Contacts, as: 'user' }],
+    include: [Contacts],
   });
 
-  // Retrieve total count of messages for the user
-  const totalCount = await Message.count({ where: { userId } });
+  return messages
 
-  return { messages, totalCount };
+  // , as: 'user' 
+
+  // Retrieve total count of messages for the user
+  // const totalCount = await Message.count({ where: { userId } });
+
+  // return { messages, totalCount };
 
 }
 
 // get all contacts
 async getAllMessage(): Promise< Message[]> {
-  return await Message.findAll();
+  return await Message.findAll({include: [Contacts]});
 }
 
 
